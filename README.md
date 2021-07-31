@@ -1,4 +1,4 @@
-(# 7S_style_macro
+# 7S_style_macro
 Style conforming macro for Office Word for 7S manga style. 
 Things it does: 
  - Numbers panel pages
