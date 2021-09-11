@@ -238,10 +238,26 @@ For Each para In Selection.Paragraphs
     'Next line is speech
     ElseIf IsNumeric(para.Range.Words(1)) = False And _
         para.Range.Words(1).Characters(1) <> "\" Then
+
+        If para.Range.Words(1) = "Nar" And _
+            para.Range.Words(2).Characters(1) = "*" Then
+            para.Range.Words(1).Delete
+            para.Range.Words(1).Delete
+            para.Range.InsertBefore Text:="Narration by "
+        End If
+        
+        If para.Range.Words(1) = "Tho" And _
+            para.Range.Words(2).Characters(1) = "*" Then
+            para.Range.Words(1).Delete
+            para.Range.Words(1).Delete
+            para.Range.InsertBefore Text:="Thought by "
+        End If
+
         para.Range.InsertBefore Text:=Str(elementIndex) + " "
         para.Range.Characters(1).Delete
         elementIndex = elementIndex + 1
         isSpeech = True
+
     End If
     
 Next para
@@ -261,7 +277,7 @@ For Each para In Selection.Paragraphs
     
     'If line is blank, skip, next line is not speech
     If Asc(para.Range.Words(1).Characters(1)) = 13 Then
-    
+
     'If starts with number and no period, is a numbered element marker
     ElseIf IsNumeric(para.Range.Words(1)) = True And _
         para.Range.Words(2).Characters(1) <> "." Then
