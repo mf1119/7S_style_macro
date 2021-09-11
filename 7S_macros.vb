@@ -73,33 +73,6 @@ End Sub
 'That's it
 Sub SevenSeasFinalFormatter()
 
-'Bold + Underline the first two lines, i.e. Title and Author
-'ActiveDocument.Paragraphs(1).Range.Bold = True
-'ActiveDocument.Paragraphs(1).Range.Underline = True
-'ActiveDocument.Paragraphs(1).Alignment = wdAlignParagraphCenter
-
-'ActiveDocument.Paragraphs(2).Range.Bold = True
-'ActiveDocument.Paragraphs(2).Range.Underline = True
-'ActiveDocument.Paragraphs(2).Alignment = wdAlignParagraphCenter
-
-'Replace ellipses with three periods, as per house style
-With ActiveDocument.Content.Find
-    .ClearFormatting
-    .Text = "·"
-    .Replacement.ClearFormatting
-    .Replacement.Text = "..."
-    .Execute Replace:=wdReplaceAll, Forward:=True, Wrap:=wdFindContinue
-End With
-
-'Replace emdash with two dashes, as per house style
-'With ActiveDocument.Content.Find
-'    .ClearFormatting
-'    .Text = "-"
-'    .Replacement.ClearFormatting
-'    .Replacement.Text = "--"
-'    .Execute Replace:=wdReplaceAll, Forward:=True, Wrap:=wdFindContinue
-'End With
-
 'The guts of the code
 'Iterates through each "paragraph" and formats accordingly
 For Each para In ActiveDocument.Paragraphs
