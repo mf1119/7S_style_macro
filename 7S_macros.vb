@@ -42,7 +42,6 @@ For Each para In Selection.Paragraphs
     'Checks if first character is numeric and therefore a panel or element marker
     'Bolds line
     If IsNumeric(para.Range.Words(1).Characters(1)) = True Then
-        'wcount = para.Range.Words.Count
         para.Range.Font.Bold = True
     End If
     
@@ -51,11 +50,6 @@ For Each para In Selection.Paragraphs
     If para.Range.Words.First = "Page " Then
         para.Range.Font.Bold = True
         para.Range.Font.Underline = True
-    End If
-    
-    'Deletes line escaper
-    If para.Range.Words(1).Characters(1) = "\" Then
-        'para.Range.Characters(1).Delete
     End If
     
     'Uses function to highlight notes
@@ -72,33 +66,6 @@ End Sub
 'Deletes escape markers
 'That's it
 Sub SevenSeasFinalFormatter()
-
-'Bold + Underline the first two lines, i.e. Title and Author
-'ActiveDocument.Paragraphs(1).Range.Bold = True
-'ActiveDocument.Paragraphs(1).Range.Underline = True
-'ActiveDocument.Paragraphs(1).Alignment = wdAlignParagraphCenter
-
-'ActiveDocument.Paragraphs(2).Range.Bold = True
-'ActiveDocument.Paragraphs(2).Range.Underline = True
-'ActiveDocument.Paragraphs(2).Alignment = wdAlignParagraphCenter
-
-'Replace ellipses with three periods, as per house style
-With ActiveDocument.Content.Find
-    .ClearFormatting
-    .Text = "·"
-    .Replacement.ClearFormatting
-    .Replacement.Text = "..."
-    .Execute Replace:=wdReplaceAll, Forward:=True, Wrap:=wdFindContinue
-End With
-
-'Replace emdash with two dashes, as per house style
-'With ActiveDocument.Content.Find
-'    .ClearFormatting
-'    .Text = "-"
-'    .Replacement.ClearFormatting
-'    .Replacement.Text = "--"
-'    .Execute Replace:=wdReplaceAll, Forward:=True, Wrap:=wdFindContinue
-'End With
 
 'The guts of the code
 'Iterates through each "paragraph" and formats accordingly
@@ -205,9 +172,6 @@ pageNum = 0
 
 'Iterates through each "paragraph" and formats accordingly
 For Each para In Selection.Paragraphs
-    'Debug.Print para.Range.Words(1)
-    'Debug.Print para.Range.Words(2)
-    
     'For each line, do the following:
        
     'If speech - Then do nothing, next line is not speech
@@ -227,12 +191,10 @@ For Each para In Selection.Paragraphs
     'If this line is speech, next line is not
     ElseIf isSpeech = True Then
         isSpeech = False
-        'Debug.Print para.Range.Words(2)
     
     'If this line is escaped, and next line is not speech
     'Do NOT delete line escaper - This is done in the formatter
     ElseIf para.Range.Words(1).Characters(1) = "\" Then
-        'para.Range.Characters(1).Delete
         isSpeech = False
     
     'If first word is page, is a page marker
@@ -242,7 +204,6 @@ For Each para In Selection.Paragraphs
         isSpeech = False
         elementIndex = 1
         pageNum = CInt(para.Range.Words(2))
-        'Debug.Print para.Range.Words(2)
     
     'If has number and period as second word, is panel marker
     'Next line is not speech
@@ -265,9 +226,7 @@ For Each para In Selection.Paragraphs
     'Increment elementIndex (just in case)
     ElseIf IsNumeric(para.Range.Words(1)) = True And _
         para.Range.Words(2).Characters(1) <> "." Then
-        'elementIndex = elementIndex + 1
-        
-        'elementIndex = Val(para.Range.Words(1)) + 1
+
         elementIndex = CInt(para.Range.Words(1)) + 1
         
         isSpeech = True
@@ -279,10 +238,26 @@ For Each para In Selection.Paragraphs
     'Next line is speech
     ElseIf IsNumeric(para.Range.Words(1)) = False And _
         para.Range.Words(1).Characters(1) <> "\" Then
+
+        If para.Range.Words(1) = "Nar" And _
+            para.Range.Words(2).Characters(1) = "*" Then
+            para.Range.Words(1).Delete
+            para.Range.Words(1).Delete
+            para.Range.InsertBefore Text:="Narration by "
+        End If
+        
+        If para.Range.Words(1) = "Tho" And _
+            para.Range.Words(2).Characters(1) = "*" Then
+            para.Range.Words(1).Delete
+            para.Range.Words(1).Delete
+            para.Range.InsertBefore Text:="Thought by "
+        End If
+
         para.Range.InsertBefore Text:=Str(elementIndex) + " "
         para.Range.Characters(1).Delete
         elementIndex = elementIndex + 1
         isSpeech = True
+
     End If
     
 Next para
@@ -302,7 +277,6 @@ For Each para In Selection.Paragraphs
     
     'If line is blank, skip, next line is not speech
     If Asc(para.Range.Words(1).Characters(1)) = 13 Then
-        'isSpeech = False
 
     'If starts with number and no period, is a numbered element marker
     ElseIf IsNumeric(para.Range.Words(1)) = True And _
