@@ -7,7 +7,7 @@
 
 
 'Does only selection
-Sub SevenSeasFormatter()
+Sub B_SevenSeasFormatter()
 
 'The guts of the code
 'Iterates through each "paragraph" and formats accordingly
@@ -65,7 +65,7 @@ End Sub
 'Formates ellipses
 'Deletes escape markers
 'That's it
-Sub SevenSeasFinalFormatter()
+Sub C_SevenSeasFinalFormatter()
 
 'The guts of the code
 'Iterates through each "paragraph" and formats accordingly
@@ -159,7 +159,7 @@ Function HighlightBetween(ByVal paragraph As Range, startMarker As String, endMa
 
 End Function
 
-Sub SevenSeasElementNumberer()
+Sub A_SevenSeasElementNumberer()
 
 Dim elementIndex
 Dim isSpeech
@@ -264,7 +264,7 @@ Next para
 
 End Sub
 
-Sub SevenSeasElementDeNumberer()
+Sub Z_SevenSeasElementDeNumberer()
 
 'Iterates through each "paragraph" and formats accordingly
 For Each para In Selection.Paragraphs
