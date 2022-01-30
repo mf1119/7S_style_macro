@@ -305,7 +305,10 @@ End Sub
 
 
 
-
+'On first speech by speaker, use the firstChar and
+'lastChar to mark the shorthand.
+'Using curly braces.
+'e.g., KIRI {Kirishima} -> Kirishima
 Function ReplaceShorthand(paragraph As Range, shortTable As Collection)
 
 Dim searchString As String
