@@ -163,6 +163,7 @@ Sub A_SevenSeasElementNumberer()
 
 Dim elementIndex
 Dim isSpeech
+Dim shortTable As New Collection
 
 'The guts of the code
 
@@ -259,6 +260,13 @@ For Each para In Selection.Paragraphs
         isSpeech = True
 
     End If
+
+    'This part is messed up, but if isSpeech is True at this point,
+    'it means that we're still at an element marker, because
+    'we haven't moved to the next line yet.
+    If isSpeech = True Then
+        ReplaceShorthand para.Range, shortTable
+    End If
     
 Next para
 
@@ -298,6 +306,79 @@ End Sub
 
 
 
+Function ReplaceShorthand(paragraph As Range, shortTable As Collection)
 
+Dim searchString As String
+Dim firstChar As String
+Dim lastChar As String
+
+Dim shortKey As String
+Dim val As String
+
+Dim FirstCharIndex As Integer
+Dim LastCharIndex As Integer
+
+Dim iter As Integer
+Dim iterEnd As Integer
+
+'Static shortTable As Collection
+Dim getValue As String
+Dim compareKey As String
+
+On Error Resume Next
+
+'shortTable.Add Item:="value", key:="key"
+
+firstChar = "{"
+lastChar = "}"
+
+For Each para In paragraph.Paragraphs
+
+    iter = 1
+    iterEnd = para.Range.Words.Count
+    
+    Do While iter < iterEnd
+        getValue = ""
+        compareKey = Trim(para.Range.Words(iter).Text)
+        getValue = shortTable(compareKey)
+
+        If getValue <> "" Then
+            para.Range.Words(iter).Delete
+            para.Range.Words(iter - 1).InsertAfter (shortTable(compareKey) + " ")
+            
+        ElseIf Trim(para.Range.Words(iter).Text) = firstChar Then
+            searchString = para.Range.Text
+            FirstCharIndex = 0
+            LastCharIndex = 0
+            
+            FirstCharIndex = InStr(searchString, firstChar) + 1
+            
+            If FirstCharIndex > 0 Then
+                LastCharIndex = InStr(FirstCharIndex, searchString, lastChar)
+            End If
+            
+            If LastCharIndex > 0 Then
+                val = Mid(searchString, FirstCharIndex, (LastCharIndex - FirstCharIndex))
+                shortKey = Trim(para.Range.Words(iter - 1).Text)
+                shortTable.Add Item:=val, key:=shortKey
+                
+                Do While Trim(para.Range.Words(iter)) <> lastChar
+                    para.Range.Words(iter).Delete
+                Loop
+                para.Range.Words(iter).Delete
+                                
+                para.Range.Words(iter - 1).Delete
+                para.Range.Words(iter - 2).InsertAfter (shortTable(shortKey) + " ")
+
+                Exit Do
+            End If
+        End If
+        
+        iter = iter + 1
+    Loop
+    
+Next para
+
+End Function
 
 
