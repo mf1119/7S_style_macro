@@ -19,8 +19,20 @@ Sub B_SevenSeasFormatter()
 
 isThought = False
 
+Dim paraTempRange
+
 For Each para In Selection.Paragraphs
+    Set paraTempRange = para.Range
     
+    With paraTempRange.Find
+        .ClearFormatting
+        .Text = "^l"
+        .Replacement.ClearFormatting
+        .Replacement.Text = "^p"
+        .Execute Replace:=wdReplaceAll, Forward:=True, _
+        Wrap:=wdFindContinue
+    End With
+
     If isThought = True Then
         para.Range.Font.Italic = True
         isThought = False
