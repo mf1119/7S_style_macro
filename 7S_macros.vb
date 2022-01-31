@@ -370,13 +370,10 @@ Dim LastCharIndex As Integer
 Dim iter As Integer
 Dim iterEnd As Integer
 
-'Static shortTable As Collection
 Dim getValue As String
 Dim compareKey As String
 
 On Error Resume Next
-
-'shortTable.Add Item:="value", key:="key"
 
 firstChar = "{"
 lastChar = "}"
@@ -410,14 +407,6 @@ For Each para In paragraph.Paragraphs
                 val = Mid(searchString, FirstCharIndex, (LastCharIndex - FirstCharIndex))
                 shortKey = Trim(para.Range.Words(iter - 1).Text)
                 shortTable.Add Item:=val, key:=shortKey
-                
-                'Do While Trim(para.Range.Words(iter)) <> lastChar
-                '    para.Range.Words(iter).Delete
-                'Loop
-                'para.Range.Words(iter).Delete
-                                
-                'para.Range.Words(iter - 1).Delete
-                'para.Range.Words(iter - 2).InsertAfter (shortTable(shortKey) + " ")
 
                 Exit Do
             End If
