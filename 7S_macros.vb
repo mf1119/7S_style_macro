@@ -67,6 +67,17 @@ End Sub
 'That's it
 Sub C_SevenSeasFinalFormatter()
 
+Dim searchString As String
+Dim firstChar As String
+Dim lastChar As String
+Dim val As String
+
+Dim iter As Integer
+Dim iterEnd As Integer
+
+firstChar = "{"
+lastChar = "}"
+
 'The guts of the code
 'Iterates through each "paragraph" and formats accordingly
 For Each para In ActiveDocument.Paragraphs
@@ -75,7 +86,42 @@ For Each para In ActiveDocument.Paragraphs
     If para.Range.Words(1).Characters(1) = "\" Then
         para.Range.Characters(1).Delete
     End If
-    
+
+    If IsNumeric(para.Range.Words(1).Text) Then
+        iter = 1
+        iterEnd = para.Range.Words.Count
+
+        Do While iter < iterEnd
+            If Trim(para.Range.Words(iter).Text) = firstChar Then
+                searchString = para.Range.Text
+                FirstCharIndex = 0
+                LastCharIndex = 0
+
+                FirstCharIndex = InStr(searchString, firstChar) + 1
+
+                If FirstCharIndex > 0 Then
+                    LastCharIndex = InStr(FirstCharIndex, searchString, lastChar)
+                End If
+
+                If LastCharIndex > 0 Then
+                    val = Mid(searchString, FirstCharIndex, (LastCharIndex - FirstCharIndex))
+
+                    Do While Trim(para.Range.Words(iter)) <> lastChar
+                        para.Range.Words(iter).Delete
+                    Loop
+                    para.Range.Words(iter).Delete
+                                    
+                    para.Range.Words(iter - 1).Delete
+                    para.Range.Words(iter - 2).InsertAfter (val + " ")
+
+                    Exit Do
+                End If
+            End If
+
+        iter = iter + 1
+        Loop
+    End If
+
 Next para
 
 End Sub
@@ -365,13 +411,13 @@ For Each para In paragraph.Paragraphs
                 shortKey = Trim(para.Range.Words(iter - 1).Text)
                 shortTable.Add Item:=val, key:=shortKey
                 
-                Do While Trim(para.Range.Words(iter)) <> lastChar
-                    para.Range.Words(iter).Delete
-                Loop
-                para.Range.Words(iter).Delete
+                'Do While Trim(para.Range.Words(iter)) <> lastChar
+                '    para.Range.Words(iter).Delete
+                'Loop
+                'para.Range.Words(iter).Delete
                                 
-                para.Range.Words(iter - 1).Delete
-                para.Range.Words(iter - 2).InsertAfter (shortTable(shortKey) + " ")
+                'para.Range.Words(iter - 1).Delete
+                'para.Range.Words(iter - 2).InsertAfter (shortTable(shortKey) + " ")
 
                 Exit Do
             End If
