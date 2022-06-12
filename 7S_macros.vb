@@ -229,16 +229,17 @@ Sub A_SevenSeasElementNumberer()
 Dim elementIndex
 Dim isSpeech
 Dim shortTable As New Collection
+Dim asterixTable As New Collection
 
 'The guts of the code
-
-shortTable.Add Item:="Narration by", Key:="NARR"
-shortTable.Add Item:="Spoken Narration by", Key:="SNARR"
-shortTable.Add Item:="Thought by", Key:="THOR"
 
 elementIndex = 1
 isSpeech = False
 pageNum = 0
+
+asterixTable.Add Item:="Thought by", Key:="THO"
+asterixTable.Add Item:="Narration by", Key:="NAR"
+asterixTable.Add Item:="Spoken Narration by", Key:="SNAR"
 
 'Iterates through each "paragraph" and formats accordingly
 For Each para In Selection.Paragraphs
@@ -316,6 +317,34 @@ For Each para In Selection.Paragraphs
 
     End If
 
+    If para.Range.Words.Count > 3 Then
+
+        If para.Range.Words(3).Text = "* " Or _
+            para.Range.Words(4).Text = "* " Then
+            
+            With para.Range.Find
+                .Forward = True
+                .Wrap = wdFindStop
+                .ClearFormatting
+                .Text = "*"
+                .Replacement.ClearFormatting
+                .Replacement.Text = ""
+                .Execute Replace:=wdReplaceAll
+            End With
+            
+            With para.Range.Find
+                .ClearFormatting
+                .Text = "  "
+                .Replacement.ClearFormatting
+                .Replacement.Text = " "
+                .Execute Replace:=wdReplaceAll
+            End With
+            
+            ReplaceShorthand para.Range, asterixTable, False
+            
+        End If
+    End If
+
     'This part is messed up, but if isSpeech is True at this point,
     'it means that we're still at an element marker, because
     'we haven't moved to the next line yet.
@@ -364,7 +393,7 @@ End Sub
 'lastChar to mark the shorthand.
 'Using curly braces.
 'e.g., KIRI {Kirishima} -> Kirishima
-Function ReplaceShorthand(paragraph As Range, shortTable As Collection)
+Function ReplaceShorthand(paragraph As Range, shortTable As Collection, Optional writeMode As Boolean = True)
 
 Dim searchString As String
 Dim firstChar As String
@@ -396,12 +425,13 @@ For Each para In paragraph.Paragraphs
         getValue = ""
         compareKey = Trim(para.Range.Words(iter).Text)
         getValue = shortTable(compareKey)
-
+        
         If getValue <> "" Then
             para.Range.Words(iter).Delete
             para.Range.Words(iter - 1).InsertAfter (shortTable(compareKey) + " ")
             
-        ElseIf Trim(para.Range.Words(iter).Text) = firstChar Then
+        ElseIf Trim(para.Range.Words(iter).Text) = firstChar And _
+                writeMode = True Then
             searchString = para.Range.Text
             FirstCharIndex = 0
             LastCharIndex = 0
@@ -427,3 +457,5 @@ For Each para In paragraph.Paragraphs
 Next para
 
 End Function
+
+
