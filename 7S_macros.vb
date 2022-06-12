@@ -37,7 +37,14 @@ For Each para In Selection.Paragraphs
         para.Range.Font.Italic = True
         isThought = False
     
+    'Both narrations and asides are italicized, but
+    'SPOKEN narration is not!
     ElseIf para.Range.Words.Count > 1 Then
+        If para.Range.Words(2) = "ASIDE" Or _
+            para.Range.Words(2) = "ASIDE " Then
+            isThought = True
+        End If
+    
         If para.Range.Words(2) = "Narration" Or _
             para.Range.Words(2) = "Narration " Then
             isThought = True
@@ -225,6 +232,10 @@ Dim shortTable As New Collection
 
 'The guts of the code
 
+shortTable.Add Item:="Narration by", Key:="NARR"
+shortTable.Add Item:="Spoken Narration by", Key:="SNARR"
+shortTable.Add Item:="Thought by", Key:="THOR"
+
 elementIndex = 1
 isSpeech = False
 pageNum = 0
@@ -297,20 +308,6 @@ For Each para In Selection.Paragraphs
     'Next line is speech
     ElseIf IsNumeric(para.Range.Words(1)) = False And _
         para.Range.Words(1).Characters(1) <> "\" Then
-
-        If para.Range.Words(1) = "Nar" And _
-            para.Range.Words(2).Characters(1) = "*" Then
-            para.Range.Words(1).Delete
-            para.Range.Words(1).Delete
-            para.Range.InsertBefore Text:="Narration by "
-        End If
-        
-        If para.Range.Words(1) = "Tho" And _
-            para.Range.Words(2).Characters(1) = "*" Then
-            para.Range.Words(1).Delete
-            para.Range.Words(1).Delete
-            para.Range.InsertBefore Text:="Thought by "
-        End If
 
         para.Range.InsertBefore Text:=Str(elementIndex) + " "
         para.Range.Characters(1).Delete
@@ -418,7 +415,7 @@ For Each para In paragraph.Paragraphs
             If LastCharIndex > 0 Then
                 val = Mid(searchString, FirstCharIndex, (LastCharIndex - FirstCharIndex))
                 shortKey = Trim(para.Range.Words(iter - 1).Text)
-                shortTable.Add Item:=val, key:=shortKey
+                shortTable.Add Item:=val, Key:=shortKey
 
                 Exit Do
             End If
@@ -430,5 +427,3 @@ For Each para In paragraph.Paragraphs
 Next para
 
 End Function
-
-
