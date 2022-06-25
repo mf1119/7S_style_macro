@@ -237,11 +237,8 @@ elementIndex = 1
 isSpeech = False
 pageNum = 0
 
-asterixTable.Add Item:="Thought by", Key:="THO"
 asterixTable.Add Item:="Thought by", Key:="Tho"
-asterixTable.Add Item:="Narration by", Key:="NAR"
 asterixTable.Add Item:="Narration by", Key:="Nar"
-asterixTable.Add Item:="Spoken Narration by", Key:="SNAR"
 asterixTable.Add Item:="Spoken Narration by", Key:="SNar"
 
 'Iterates through each "paragraph" and formats accordingly
