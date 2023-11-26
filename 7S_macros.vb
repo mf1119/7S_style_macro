@@ -386,8 +386,13 @@ Next para
 
 End Sub
 
+Sub ZZ_AllInOne()
 
+A_SevenSeasElementNumberer
+B_SevenSeasFormatter
+C_SevenSeasFinalFormatter
 
+End Sub
 
 'On first speech by speaker, use the firstChar and
 'lastChar to mark the shorthand.
