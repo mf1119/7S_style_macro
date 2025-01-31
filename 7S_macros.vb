@@ -280,8 +280,16 @@ For Each para In Selection.Paragraphs
     'Next line is not speech
     ElseIf IsNumeric(para.Range.Words(1).Characters(1)) = True And _
         para.Range.Words(2).Characters(1) = "." Then
-        pageNum = CInt(para.Range.Words(1))
-        isSpeech = False
+    'x.y = Panel Numberer = Next line is not speech.
+    'x NAM = Element label = Next line IS speech
+    'x.y.z NAM = Also Element label in KodanJP style = Next line IS speech
+            If IsNumeric(para.Range.Words(3).Characters(1)) = True And _
+                para.Range.Words(4).Characters(1) = "." Then
+                isSpeech = True
+            Else
+                pageNum = CInt(para.Range.Words(1))
+                isSpeech = False
+            End If
         
     'If starts with period and second word is number, then is an
     'unnumbered panel marker. Do number.
