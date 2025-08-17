@@ -20,6 +20,7 @@ Sub B_SevenSeasFormatter()
 isThought = False
 
 Dim paraTempRange
+Dim findResult
 
 For Each para In Selection.Paragraphs
     Set paraTempRange = para.Range
@@ -51,9 +52,12 @@ For Each para In Selection.Paragraphs
         End If
     End If
     
+    findResult = InStr(1, para.Range.Text, "/ID", vbTextCompare)
+
     If para.Range.Words.Count > 3 Then
-        If para.Range.Words(2) = "Thought " And _
-            para.Range.Words(3) = "by " Then
+        If (para.Range.Words(2) = "Thought " And _
+            para.Range.Words(3) = "by ") Or _
+            (findResult > 0) Then
             isThought = True
         End If
     End If
@@ -470,5 +474,3 @@ For Each para In paragraph.Paragraphs
 Next para
 
 End Function
-
-
