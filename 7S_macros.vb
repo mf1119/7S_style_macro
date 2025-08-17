@@ -70,7 +70,8 @@ For Each para In Selection.Paragraphs
     
     'Checks if first word is "Page" and therefore a page marker
     'Bolds and underlines line
-    If para.Range.Words.First = "Page " Then
+    If para.Range.Words.First = "Page " Or _
+        para.Range.Words.First = "PAGE " Then
         para.Range.Font.Bold = True
         para.Range.Font.Underline = True
     End If
@@ -269,7 +270,8 @@ For Each para In Selection.Paragraphs
     
     'If this line is escaped, and next line is not speech
     'Do NOT delete line escaper - This is done in the formatter
-    ElseIf para.Range.Words(1).Characters(1) = "\" Then
+    ElseIf para.Range.Words(1).Characters(1) = "\" Or _
+            para.Range.Words(1).Characters(1) = "[" Then
         isSpeech = False
     
     'If first word is page, is a page marker
@@ -291,8 +293,8 @@ For Each para In Selection.Paragraphs
                 para.Range.Words(4).Characters(1) = "." Then
                 isSpeech = True
             Else
-                pageNum = CInt(para.Range.Words(1))
-                isSpeech = False
+        pageNum = CInt(para.Range.Words(1))
+        isSpeech = False
             End If
         
     'If starts with period and second word is number, then is an
