@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ $# -eq 1 ]
+	then
+		filename=$1
+		if [ -e "$filename" ]
+		then
+			echo "${filename%%.*} exists"
+			mkdir "${filename%%.*}"
+			convert -density 300 "$filename" -quality 00 -scene 1  "${filename%%.*}"/"${filename%%.*}"_%03d.png
+			exit
+		
+		elif [[ "$filename" = "-a" ]]
+		then
+			for i in *.pdf; do
+				[ -f "$i" ] || break
+				echo $i
+				mkdir ${i%%.*}
+				convert -density 300 $i -quality 00 -scene 1  ${i%%.*}/${i%%.*}_%03d.png
+			done
+			exit
+		else
+			echo "$filename doesn't exist"
+			echo "Use -a to convert all files."
+			exit
+		fi
+	else
+	
+	echo "No args found. Use -a to convert all files."
+fi

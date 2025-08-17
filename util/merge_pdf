@@ -1,0 +1,18 @@
+#!/bin/bash
+# sudo apt install pdftk ghostscript
+
+
+gs -o merged.pdf \
+-sDEVICE=pdfwrite \
+-dPDFSETTINGS=/prepress \
+-dColorConversionStrategy=/LeaveColorUnchanged \
+-dDownsampleMonoImages=false \
+-dDownsampleGrayImages=false \
+-dDownsampleColorImages=false \
+-dAutoFilterColorImages=false \
+-dAutoFilterGrayImages=false \
+-dColorImageFilter=/FlateEncode \
+-dGrayImageFilter=/FlateEncode \
+-dLastPage=1 \
+*.pdf
+pdftk ./merged.pdf cat output merged_clean.pdf
