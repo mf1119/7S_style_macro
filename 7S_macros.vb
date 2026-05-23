@@ -42,22 +42,19 @@ For Each para In Selection.Paragraphs
     'SPOKEN narration is not!
     ElseIf para.Range.Words.Count > 1 Then
         If para.Range.Words(2) = "ASIDE" Or _
-            para.Range.Words(2) = "ASIDE " Then
-            isThought = True
-        End If
-    
-        If para.Range.Words(2) = "Narration" Or _
-            para.Range.Words(2) = "Narration " Then
+            para.Range.Words(2) = "Narrated" Then
             isThought = True
         End If
     End If
     
-    findResult = InStr(1, para.Range.Text, "/ID", vbTextCompare)
+    findID = InStr(1, para.Range.Text, "/ ID", vbTextCompare)
+    findF = InStr(1, para.Range.Text, "/ F", vbTextCompare)
 
     If para.Range.Words.Count > 3 Then
         If (para.Range.Words(2) = "Thought " And _
             para.Range.Words(3) = "by ") Or _
-            (findResult > 0) Then
+            (findID > 0) Or _
+            (findF > 0) Then
             isThought = True
         End If
     End If
@@ -243,7 +240,7 @@ isSpeech = False
 pageNum = 0
 
 asterixTable.Add Item:="Thought by", Key:="Tho"
-asterixTable.Add Item:="Narration by", Key:="Nar"
+asterixTable.Add Item:="Narrated by", Key:="Nar"
 asterixTable.Add Item:="Spoken Narration by", Key:="SNar"
 
 'Iterates through each "paragraph" and formats accordingly
@@ -293,8 +290,8 @@ For Each para In Selection.Paragraphs
                 para.Range.Words(4).Characters(1) = "." Then
                 isSpeech = True
             Else
-        pageNum = CInt(para.Range.Words(1))
-        isSpeech = False
+                pageNum = CInt(para.Range.Words(1))
+                isSpeech = False
             End If
         
     'If starts with period and second word is number, then is an
